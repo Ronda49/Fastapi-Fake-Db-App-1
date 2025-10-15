@@ -15,7 +15,7 @@ jobs:
       TRIVY_REPORT_DIR: reports
 
     steps:
-    # 1️⃣ Checkout code
+    # 1️⃣ Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -25,17 +25,17 @@ jobs:
       with:
         python-version: "3.11"
 
-    # 3️⃣ Install dependencies
+    # 3️⃣ Install Python dependencies
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install fastapi uvicorn pydantic flake8
 
-    # 4️⃣ Lint code
+    # 4️⃣ Run code linting
     - name: Run code linting
       run: flake8 . --max-line-length=120
 
-    # 5️⃣ Set up Docker
+    # 5️⃣ Set up Docker Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -61,7 +61,7 @@ jobs:
     - name: Trivy Image Scan
       run: trivy image $DOCKER_IMAGE --format json --output $TRIVY_REPORT_DIR/trivy-image-report.json
 
-    # 🔟 Upload Trivy reports
+    # 🔟 Upload Trivy reports as artifacts
     - name: Upload Trivy Reports
       uses: actions/upload-artifact@v4
       with:
