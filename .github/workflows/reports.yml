@@ -19,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Set up Python (if backend is Python)
+    # 2️⃣ Set up Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -33,11 +33,10 @@ jobs:
 
     # 4️⃣ Lint code
     - name: Run code linting
-      run: |
-        flake8 . --max-line-length=120
+      run: flake8 . --max-line-length=120
 
-    # 5️⃣ Install Docker (comes preinstalled in ubuntu-latest)
-    - name: Set up Docker
+    # 5️⃣ Set up Docker
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
     # 6️⃣ Install Trivy
@@ -56,17 +55,15 @@ jobs:
 
     # 8️⃣ Build Docker image
     - name: Build Docker image
-      run: |
-        docker build -t $DOCKER_IMAGE .
+      run: docker build -t $DOCKER_IMAGE .
 
     # 9️⃣ Trivy Docker image scan
     - name: Trivy Image Scan
-      run: |
-        trivy image $DOCKER_IMAGE --format json --output $TRIVY_REPORT_DIR/trivy-image-report.json
+      run: trivy image $DOCKER_IMAGE --format json --output $TRIVY_REPORT_DIR/trivy-image-report.json
 
-    # 🔟 Upload reports as artifacts
+    # 🔟 Upload Trivy reports
     - name: Upload Trivy Reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: trivy-reports
         path: $TRIVY_REPORT_DIR
