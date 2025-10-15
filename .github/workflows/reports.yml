@@ -60,10 +60,3 @@ jobs:
     # 9️⃣ Trivy Docker image scan
     - name: Trivy Image Scan
       run: trivy image $DOCKER_IMAGE --format json --output $TRIVY_REPORT_DIR/trivy-image-report.json
-
-    # 🔟 Upload Trivy reports as artifacts
-    - name: Upload Trivy Reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: trivy-reports
-        path: $TRIVY_REPORT_DIR
